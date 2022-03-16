@@ -16,7 +16,7 @@ export class PostDialogComponent {
     public dataService: DataService
   ) {}
 
-  onNoClick(): void {
+  onClose(): void {
     this.dialogRef.close();
   }
 

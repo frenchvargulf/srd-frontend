@@ -23,7 +23,7 @@ export class RedditFeedComponent implements OnInit {
 
   openDialog(post: RedditPost): void {
     this.dialog.open(PostDialogComponent, {
-      width: '100%',
+      width: '600px',
       data: post
     });
   }
