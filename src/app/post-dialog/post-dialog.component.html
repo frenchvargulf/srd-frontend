@@ -1,0 +1,7 @@
+<h1 mat-dialog-title>{{postData.title}}</h1>
+<div mat-dialog-content>
+  <srd-post [post]="postData"></srd-post>
+</div>
+<div mat-dialog-actions>
+  <button mat-raised-button class="close" (click)="onClose()" color="warn">Close</button>
+</div>
