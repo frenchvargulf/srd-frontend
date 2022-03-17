@@ -2,6 +2,9 @@
   width: 100%;
   white-space: pre-wrap;
   word-break: break-all;
+  &__title {
+    padding: 0 .25em;
+  }
 }
 
 .padding-top-bottom {
