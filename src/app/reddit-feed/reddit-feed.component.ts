@@ -1,24 +1,56 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from '../services/posts.service';
+import { PostsService } from '../services/posts.service';
 import { RedditPost } from '../RedditPost';
-import { Observable } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { PostDialogComponent } from '../post-dialog/post-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
+import { RedditService } from '../services/reddit.service';
+import { OnDestroy } from '@angular/core';
 
 @Component({
   selector: 'srd-reddit-feed',
   templateUrl: './reddit-feed.component.html',
   styleUrls: ['./reddit-feed.component.scss']
 })
-export class RedditFeedComponent implements OnInit {
-  posts$: Observable<any> = of([]);
+export class RedditFeedComponent implements OnInit, OnDestroy {
+  pageSize = 25;
+  currentPage = 0;
+  pageSizeOptions = [5, 10, 25];
+  posts: RedditPost[] = [];
+  private postsSubscription!: Subscription;
 
-  constructor(public dialog: MatDialog, private dataService: DataService) {
+  public handlePageChange(e: any) {
+    if (this.pageSize !== e.pageSize) {
+      this.postsService.clearPosts();
+      this.currentPage = 0;
+      this.getPosts();
+    }
   }
 
-  ngOnInit(): void {
-    this.posts$ = this.dataService.getPosts();
+  constructor(private postsService: PostsService, private redditService: RedditService, public dialog: MatDialog) { }
+
+  ngOnInit() {
+    this.postsSubscription = this.postsService.postsChanged
+      .subscribe(
+        (posts: RedditPost[]) => {
+          this.posts = this.postsService.getSlicedPosts(this.pageSize * this.currentPage, this.pageSize * this.currentPage + this.pageSize)
+        }
+      );
+    this.getPosts();
+  }
+
+  private getPosts() {
+    this.redditService.fetchPosts(this.pageSize);
+  }
+
+  getNextPosts() {
+    this.currentPage = this.currentPage + 1;
+    this.getPosts();
+  }
+
+  getPreviousPosts() {
+    this.currentPage = this.currentPage - 1;
+    this.posts = this.postsService.getSlicedPosts(this.pageSize * this.currentPage, this.pageSize * this.currentPage + this.pageSize);
   }
 
   openDialog(post: RedditPost): void {
@@ -26,5 +58,9 @@ export class RedditFeedComponent implements OnInit {
       width: '600px',
       data: post
     });
+  }
+
+  ngOnDestroy(): void {
+    this.postsSubscription.unsubscribe();
   }
 }

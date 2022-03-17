@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { RedditPost } from '../RedditPost';
-import { DataService } from '../services/posts.service';
+import { PostsService } from '../services/posts.service';
 
 @Component({
   selector: 'srd-post-dialog',
@@ -12,8 +12,8 @@ export class PostDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<PostDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: RedditPost,
-    public dataService: DataService
+    @Inject(MAT_DIALOG_DATA) public postData: RedditPost,
+    public postService: PostsService
   ) {}
 
   onClose(): void {

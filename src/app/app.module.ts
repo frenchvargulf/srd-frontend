@@ -11,7 +11,7 @@ import { PostComponent } from './post/post.component';
 import { AppRouters } from './app.routes';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { PostDialogComponent } from './post-dialog/post-dialog.component';
-import { DataService } from './services/posts.service';
+import { PostsService } from './services/posts.service';
 import { RedditFeedComponent } from './reddit-feed/reddit-feed.component';
 
 @NgModule({
@@ -38,7 +38,7 @@ import { RedditFeedComponent } from './reddit-feed/reddit-feed.component';
     AppRouters,
     FormsModule,
   ],
-  providers: [DataService],
+  providers: [PostsService],
   bootstrap: [AppComponent],
   entryComponents: [
     PostDialogComponent
