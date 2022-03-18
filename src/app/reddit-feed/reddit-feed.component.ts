@@ -19,14 +19,6 @@ export class RedditFeedComponent implements OnInit, OnDestroy {
   posts: RedditPost[] = [];
   private postsSubscription!: Subscription;
 
-  public handlePageChange(e: any) {
-    if (this.pageSize !== e.pageSize) {
-      this.postsService.clearPosts();
-      this.currentPage = 0;
-      this.getPosts();
-    }
-  }
-
   constructor(private postsService: PostsService, private redditService: RedditService, public dialog: MatDialog) { }
 
   ngOnInit() {
@@ -41,6 +33,14 @@ export class RedditFeedComponent implements OnInit, OnDestroy {
 
   private getPosts() {
     this.redditService.fetchPosts(this.pageSize);
+  }
+
+  handlePageChange(e: any) {
+    if (this.pageSize !== e.pageSize) {
+      this.postsService.clearPosts();
+      this.currentPage = 0;
+      this.getPosts();
+    }
   }
 
   getNextPosts() {

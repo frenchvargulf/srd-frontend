@@ -13,6 +13,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { PostDialogComponent } from './post-dialog/post-dialog.component';
 import { PostsService } from './services/posts.service';
 import { RedditFeedComponent } from './reddit-feed/reddit-feed.component';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @NgModule({
   declarations: [
@@ -43,5 +44,6 @@ import { RedditFeedComponent } from './reddit-feed/reddit-feed.component';
   entryComponents: [
     PostDialogComponent
   ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppModule { }
