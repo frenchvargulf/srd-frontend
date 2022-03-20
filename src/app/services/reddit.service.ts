@@ -1,34 +1,48 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { PostsService } from './posts.service';
+import { RedditPost } from '../RedditPost';
+
+type ListingPost = {
+  data: RedditPost;
+  kind: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class RedditService {
+  isFetchingPosts$ = new BehaviorSubject(false);
   apiURL = 'https://www.reddit.com/r/sweden.json';
   count = 0;
   after = '';
 
   constructor(private http: HttpClient, private postsService: PostsService) { }
 
+  getIsFetchingPosts(): boolean {
+    return this.isFetchingPosts$.value;
+  }
+
   fetchPosts(limit = 25): void {
+    this.isFetchingPosts$.next(true);
     this.http
       .get<any>(this.apiURL + `?limit=${limit}` + (this.after ? `&after=${this.after}` : ''))
       .pipe(
         tap(res => {
           this.after = res.data.after;
         }),
-        map(res => res.data.children.map((child: any) => child.data)),
+        map(res => res.data.children.map((child: ListingPost) => child.data)),
         catchError(this.handleError)
       )
       .subscribe(posts => {
+        this.isFetchingPosts$.next(false);
         this.postsService.setPosts(posts);
       });
   }
 
-  handleError(error: ErrorEvent | HttpErrorResponse) {
+  handleError(error: ErrorEvent | HttpErrorResponse): Observable<ErrorEvent | HttpErrorResponse> {
     let errorMessage = '';
+    this.isFetchingPosts$.next(false);
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;
     } else if (error instanceof HttpErrorResponse) {

@@ -1,24 +1,24 @@
 <div class="container reddit-feed" fxLayout="column" fxLayoutAlign="center center">
 
-  <mat-form-field color="accent" fxLayout="row" fxLayoutAlign="left left" class="reddit-feed__page-size-select full-width padding-top-bottom">
-    <mat-label>Choose page size</mat-label>
-    <mat-select [(value)]="pageSize" (selectionChange)="handlePageChange($event)">
-      <mat-option *ngFor="let pageSizeOption of pageSizeOptions" [value]="pageSizeOption">{{pageSizeOption}}</mat-option>
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field color="accent" fxLayout="row" fxLayoutAlign="left left" class="reddit-feed__page-size-select full-width padding-top-bottom">
+        <mat-label>Choose page size</mat-label>
+        <mat-select [(value)]="pageSize" (selectionChange)="handlePageChange()">
+            <mat-option *ngFor="let pageSizeOption of pageSizeOptions" [value]="pageSizeOption">{{pageSizeOption}}</mat-option>
+        </mat-select>
+    </mat-form-field>
 
-  <div fxLayout="row" fxLayoutAlign="space-between space-between" class="full-width padding-top-bottom">
-    <button id="basic" type="button" mat-button (click)="getPreviousPosts()" [disabled]="currentPage === 0">
+    <div fxLayout="row" fxLayoutAlign="space-between space-between" class="full-width padding-top-bottom">
+        <button id="basic" type="button" mat-button (click)="getPreviousPosts()" [disabled]="currentPage === 0 || isFetchingPosts">
       Prev
     </button>
-    <button id="basic" type="button" mat-button (click)="getNextPosts()">
+        <button id="basic" type="button" mat-button (click)="getNextPosts()" [disabled]="isFetchingPosts">
       Next
     </button>
-  </div>
+    </div>
 
-  <mat-card *ngFor="let post of posts" (click)="openDialog(post)" class="card cursor-pointer">
-    <mat-card-title class="card__title">
-      {{post.title}}
-    </mat-card-title>
-  </mat-card>
+    <mat-card *ngFor="let post of posts" (click)="openDialog(post)" class="card cursor-pointer">
+        <mat-card-title class="card__title">
+            {{post.title}}
+        </mat-card-title>
+    </mat-card>
 </div>
