@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { PostsService } from '../services/posts.service';
 import { RedditPost } from '../RedditPost';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 import { PostDialogComponent } from '../post-dialog/post-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { RedditService } from '../services/reddit.service';
 import { OnDestroy } from '@angular/core';
-import { MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: 'srd-reddit-feed',
@@ -18,37 +17,42 @@ export class RedditFeedComponent implements OnInit, OnDestroy {
   currentPage = 0;
   pageSizeOptions = [5, 10, 25];
   posts: RedditPost[] = [];
+  private destroyed$ = new Subject();
   private postsSubscription!: Subscription;
 
   constructor(private postsService: PostsService, private redditService: RedditService, public dialog: MatDialog) { }
 
-  ngOnInit() {
+  get isFetchingPosts(): boolean {
+    return this.redditService.getIsFetchingPosts();
+  }
+
+  ngOnInit(): void {
     this.postsSubscription = this.postsService.postsChanged
+      .pipe(takeUntil(this.destroyed$))
       .subscribe(
-        (posts: RedditPost[]) => {
+        () =>
           this.posts = this.postsService.getSlicedPosts(this.pageSize * this.currentPage, this.pageSize * this.currentPage + this.pageSize)
-        }
       );
     this.getPosts();
   }
 
-  private getPosts() {
+  private getPosts(): void {
     this.redditService.fetchPosts(this.pageSize);
   }
 
-  handlePageChange(e: MatSelectChange) {
+  handlePageChange(): void {
     this.postsService.clearPosts();
     this.redditService.clearAfter();
     this.currentPage = 0;
     this.getPosts();
   }
 
-  getNextPosts() {
+  getNextPosts(): void {
     this.currentPage = this.currentPage + 1;
     this.getPosts();
   }
 
-  getPreviousPosts() {
+  getPreviousPosts(): void {
     this.currentPage = this.currentPage - 1;
     this.posts = this.postsService.getSlicedPosts(this.pageSize * this.currentPage, this.pageSize * this.currentPage + this.pageSize);
   }
@@ -61,6 +65,6 @@ export class RedditFeedComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.postsSubscription.unsubscribe();
+    this.destroyed$.next(true);
   }
 }
