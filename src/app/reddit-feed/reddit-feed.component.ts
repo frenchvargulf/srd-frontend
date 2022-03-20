@@ -6,6 +6,7 @@ import { PostDialogComponent } from '../post-dialog/post-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { RedditService } from '../services/reddit.service';
 import { OnDestroy } from '@angular/core';
+import { MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: 'srd-reddit-feed',
@@ -35,12 +36,11 @@ export class RedditFeedComponent implements OnInit, OnDestroy {
     this.redditService.fetchPosts(this.pageSize);
   }
 
-  handlePageChange(e: any) {
-    if (this.pageSize !== e.pageSize) {
-      this.postsService.clearPosts();
-      this.currentPage = 0;
-      this.getPosts();
-    }
+  handlePageChange(e: MatSelectChange) {
+    this.postsService.clearPosts();
+    this.redditService.clearAfter();
+    this.currentPage = 0;
+    this.getPosts();
   }
 
   getNextPosts() {
