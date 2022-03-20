@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, map, tap } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { PostsService } from './posts.service';
@@ -11,7 +11,6 @@ export class RedditService {
   after = '';
 
   constructor(private http: HttpClient, private postsService: PostsService) { }
-
 
   fetchPosts(limit = 25): void {
     this.http
@@ -28,16 +27,20 @@ export class RedditService {
       });
   }
 
-  handleError(error: any) {
+  handleError(error: ErrorEvent | HttpErrorResponse) {
     let errorMessage = '';
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;
-    } else {
+    } else if (error instanceof HttpErrorResponse) {
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
     window.alert(errorMessage);
     return throwError(() => {
       return errorMessage;
     });
+  }
+
+  clearAfter() {
+    this.after = '';
   }
 }
