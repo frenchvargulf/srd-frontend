@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import { HarnessLoader } from '@angular/cdk/testing';
@@ -10,6 +10,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RedditService } from '../services/reddit.service';
 
 
 describe('RedditFeedComponent', () => {
@@ -17,6 +18,9 @@ describe('RedditFeedComponent', () => {
   let fixture: ComponentFixture<RedditFeedComponent>;
   let loader: HarnessLoader;
   let buttonHarness = MatButtonHarness;
+  let redditServiceMock = jasmine.createSpyObj(['fetchPosts', 'getIsFetchingPosts']);
+  redditServiceMock.fetchPosts.and.returnValue([]);
+  redditServiceMock.getIsFetchingPosts.and.returnValue(false);
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -27,6 +31,10 @@ describe('RedditFeedComponent', () => {
         {
           provide: MatDialogRef,
           useValue: {}
+        },
+        {
+          provide: RedditService,
+          useValue: redditServiceMock
         },
         PostsService
       ],
@@ -48,13 +56,13 @@ describe('RedditFeedComponent', () => {
     expect(await buttons[0].getText()).toBe('Next');
   });
 
-  it('should click a button', async () => {
+  it('should click an enabled next button', async () => {
     const button = await loader.getHarness(buttonHarness.with({ text: 'Next' }));
     await button.click();
     expect(fixture.componentInstance.currentPage).toBe(1);
   });
 
-  it('should click a button', async () => {
+  it('should click am enabled prev button', async () => {
     const button = await loader.getHarness(buttonHarness.with({ text: 'Prev' }));
     const nextButton = await loader.getHarness(buttonHarness.with({ text: 'Next' }));
     await nextButton.click();
