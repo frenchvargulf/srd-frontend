@@ -19,11 +19,11 @@ export class RedditService {
 
   constructor(private http: HttpClient, private postsService: PostsService) { }
 
-  getIsFetchingPosts(): boolean {
+  public getIsFetchingPosts(): boolean {
     return this.isFetchingPosts$.value;
   }
 
-  fetchPosts(limit = 25): void {
+  public fetchPosts(limit = 25): void {
     this.isFetchingPosts$.next(true);
     this.http
       .get<any>(this.apiURL + `?limit=${limit}` + (this.after ? `&after=${this.after}` : ''))
@@ -40,7 +40,7 @@ export class RedditService {
       });
   }
 
-  handleError(error: ErrorEvent | HttpErrorResponse): Observable<ErrorEvent | HttpErrorResponse> {
+  private handleError(error: ErrorEvent | HttpErrorResponse): Observable<ErrorEvent | HttpErrorResponse> {
     let errorMessage = '';
     this.isFetchingPosts$.next(false);
     if (error.error instanceof ErrorEvent) {
@@ -54,7 +54,7 @@ export class RedditService {
     });
   }
 
-  clearAfter() {
+  public clearAfter() {
     this.after = '';
   }
 }

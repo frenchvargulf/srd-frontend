@@ -10,25 +10,25 @@ export class PostsService {
 
   constructor() { }
 
-  setPosts(posts: RedditPost[]) {
+  public setPosts(posts: RedditPost[]) {
     this.posts = this.posts.concat(posts);
     this.postsChanged.next(this.posts);
   }
 
-  getSlicedPosts(start: number, end: number) {
+  public getSlicedPosts(start: number, end: number) {
     return this.posts.slice(start, end);
   }
 
-  clearPosts() {
+  public clearPosts() {
     this.posts = [];
     this.postsChanged.next(this.posts);
   }
 
-  getPosts() {
+  public getPosts() {
     return this.posts.slice();
   }
 
-  getPost(index: number) {
+  public getPost(index: number) {
     return this.posts[index];
   }
 

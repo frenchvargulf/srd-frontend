@@ -16,7 +16,7 @@ export class PostDialogComponent {
     public postService: PostsService
   ) {}
 
-  onClose(): void {
+  public onClose(): void {
     this.dialogRef.close();
   }
 
