@@ -26,7 +26,7 @@ export class RedditFeedComponent implements OnInit, OnDestroy {
     return this.redditService.getIsFetchingPosts();
   }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.postsSubscription = this.postsService.postsChanged
       .pipe(takeUntil(this.destroyed$))
       .subscribe(
@@ -40,31 +40,31 @@ export class RedditFeedComponent implements OnInit, OnDestroy {
     this.redditService.fetchPosts(this.pageSize);
   }
 
-  handlePageChange(): void {
+  public handlePageChange(): void {
     this.postsService.clearPosts();
     this.redditService.clearAfter();
     this.currentPage = 0;
     this.getPosts();
   }
 
-  getNextPosts(): void {
+  public getNextPosts(): void {
     this.currentPage = this.currentPage + 1;
     this.getPosts();
   }
 
-  getPreviousPosts(): void {
+  public getPreviousPosts(): void {
     this.currentPage = this.currentPage - 1;
     this.posts = this.postsService.getSlicedPosts(this.pageSize * this.currentPage, this.pageSize * this.currentPage + this.pageSize);
   }
 
-  openDialog(post: RedditPost): void {
+  public openDialog(post: RedditPost): void {
     this.dialog.open(PostDialogComponent, {
       width: '600px',
       data: post
     });
   }
 
-  ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     this.destroyed$.next(true);
   }
 }
